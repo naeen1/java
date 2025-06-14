@@ -1,5 +1,8 @@
 package Ranking;
 import javax.swing.*;
+
+import DBManager.DBManager;
+
 import java.awt.*;
 import java.util.List;
 
