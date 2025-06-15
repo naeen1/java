@@ -1,6 +1,7 @@
 package GamePane;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -10,7 +11,6 @@ import Lobby.Lobby;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Timer;
 
 public class GamePane extends JPanel implements ActionListener, KeyListener {
     Timer timer = new Timer(10, this);
