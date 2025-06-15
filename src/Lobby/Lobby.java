@@ -1,10 +1,14 @@
 package Lobby;
 
+import java.awt.*;
 import java.awt.EventQueue;
+import java.net.URL;
 import javax.swing.*;
 
 import DBManager.DBManager;
 import Game.Game;
+import Ranking.Ranking;
+import JPanel.BackgroundPanel; // ← 패키지명에 맞게 import
 
 public class Lobby extends JFrame {
 
@@ -27,54 +31,59 @@ public class Lobby extends JFrame {
     public Lobby() {
         setTitle("벽돌깨기 로비");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 450, 250); // 창 크기
-        contentPane = new JPanel();
-        contentPane.setLayout(null); // 절대 위치 배치
+        setBounds(100, 100, 544, 341);
+
+        // ★ 배경 이미지 패널로 contentPane 생성
+        ImageIcon bgIcon;
+        try {
+            // 프로젝트 루트에서 실행할 때, imgs/brick.png로 접근
+            bgIcon = new ImageIcon("imgs/brick.png");
+            System.out.println("이미지 파일 로드 성공: imgs/brick.png");
+        } catch (Exception e) {
+            System.out.println("이미지를 불러올 수 없습니다.");
+            e.printStackTrace();
+            bgIcon = new ImageIcon(); // 빈 이미지라도 생성
+        }
+
+
+        contentPane = new BackgroundPanel(bgIcon);
+        contentPane.setLayout(null);
         setContentPane(contentPane);
 
-        // 아이디 라벨
         JLabel idLabel = new JLabel("아이디:");
-        idLabel.setBounds(40, 30, 60, 25); // x, y, width, height
+        idLabel.setBackground(new Color(255, 255, 255));
+        idLabel.setFont(new Font("궁서", Font.BOLD, 13));
+        idLabel.setForeground(Color.YELLOW);
+        idLabel.setBounds(126, 75, 60, 25);
         contentPane.add(idLabel);
 
-        // 아이디 입력 필드
         idField = new JTextField();
-        idField.setBounds(110, 30, 180, 25);
+        idField.setBounds(196, 75, 180, 25);
         contentPane.add(idField);
 
-        // 비밀번호 라벨
         JLabel pwLabel = new JLabel("비밀번호:");
-        pwLabel.setBounds(40, 70, 60, 25);
+        pwLabel.setForeground(Color.YELLOW);
+        pwLabel.setFont(new Font("HY궁서B", Font.BOLD, 13));
+        pwLabel.setBounds(126, 115, 60, 25);
         contentPane.add(pwLabel);
 
-        // 비밀번호 입력 필드
         pwField = new JPasswordField();
-        pwField.setBounds(110, 70, 180, 25);
+        pwField.setBounds(196, 115, 180, 25);
         contentPane.add(pwField);
 
-        // 로그인 버튼
         JButton loginBtn = new JButton("로그인 후 시작");
-        loginBtn.setBounds(40, 120, 120, 35);
+        loginBtn.setBounds(126, 165, 120, 35);
         contentPane.add(loginBtn);
-        
-        loginBtn.addActionListener(e -> {
-            String id = idField.getText();
-            String pw = new String(pwField.getPassword());
-            if (DBManager.login(id, pw)) {
-                // 게임 화면 띄우기
-                new Game(id); // GameFrame이 JFrame을 상속받는 경우
-                dispose(); // 현재 로비 창 닫기
-            } else {
-                JOptionPane.showMessageDialog(this, "로그인 실패");
-            }
-        });
+        loginBtn.addActionListener(e -> performLogin());
 
-        // 랭킹보기 버튼
+        idField.addActionListener(e -> performLogin());
+        pwField.addActionListener(e -> performLogin());
+
         JButton rankBtn = new JButton("랭킹보기");
-        rankBtn.setBounds(170, 120, 120, 35);
+        rankBtn.setBounds(256, 165, 120, 35);
         contentPane.add(rankBtn);
+        rankBtn.addActionListener(e -> new Ranking());
 
-        // 필요시: 컴포넌트 이름 지정 (테스트 자동화 등)
         idField.setName("idField");
         pwField.setName("pwField");
         loginBtn.setName("loginBtn");
@@ -82,8 +91,18 @@ public class Lobby extends JFrame {
         idLabel.setName("idLabel");
         pwLabel.setName("pwLabel");
 
-        setLocationRelativeTo(null); // 화면 중앙 배치
+        setLocationRelativeTo(null);
         setVisible(true);
     }
-}
 
+    private void performLogin() {
+        String id = idField.getText();
+        String pw = new String(pwField.getPassword());
+        if (DBManager.login(id, pw)) {
+            new Game(id);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "로그인 실패");
+        }
+    }
+}

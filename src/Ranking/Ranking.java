@@ -8,16 +8,20 @@ import java.util.List;
 
 public class Ranking extends JFrame {
     public Ranking() {
+    	getContentPane().setBackground(Color.WHITE);
         setTitle("랭킹");
-        setLayout(new BorderLayout());
         List<String[]> list = DBManager.getTop5();
 
         String[] cols = {"ID", "Score"};
         String[][] data = list.toArray(new String[0][0]);
+        getContentPane().setLayout(null);
         JTable table = new JTable(data, cols);
+        table.setFont(new Font("굴림", Font.BOLD, 14));
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
-        setSize(250, 200);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(12, 76, 198, 108);
+        getContentPane().add(scrollPane);
+        setSize(235, 301);
         setLocationRelativeTo(null);
         setVisible(true);
     }
